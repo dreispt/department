@@ -13,14 +13,14 @@ env:
 #    - ODOO="https://github.com/odoo/odoo/archive/master.tar.gz"
 
 install: 
-    - CFLAGS=-O0 pip install lxml  # https://bugs.launchpad.net/lxml/+bug/1176147/comments/8
-    - pip install coveralls flake8
+    # https://bugs.launchpad.net/lxml/+bug/1176147/comments/8
+    - CFLAGS=-O0 pip install lxml coveralls flake8
     - pip install http://download.gna.org/pychart/PyChart-1.39.tar.gz
-    - pip install ${ODOO}
+    - CFLAGS=-O0 pip install ${ODOO}
 
 before_script: 
     - createdb test
-    - sudo python -m smtpd -n -c DebuggingServer localhost:25 &
+      #- sudo python -m smtpd -n -c DebuggingServer localhost:25 &
 
 # Preload modules before testing to only run tests of repo's modules
 # Include current directory and dependent repos in addons-path as well as official addons
