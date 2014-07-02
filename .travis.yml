@@ -13,6 +13,7 @@ env:
 #    - ODOO="https://github.com/odoo/odoo/archive/master.tar.gz"
 
 install: 
+    - CFLAGS=-O0 pip install lxml  # https://bugs.launchpad.net/lxml/+bug/1176147/comments/8
     - pip install coveralls flake8
     - pip install http://download.gna.org/pychart/PyChart-1.39.tar.gz
     - pip install ${ODOO}
