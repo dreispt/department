@@ -34,7 +34,6 @@ werkzeug
 xlwt
 
 # tests
-unittest2
 mock
 coveralls
 flake8
