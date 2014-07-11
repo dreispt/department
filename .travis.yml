@@ -12,7 +12,7 @@ before_install:
     - export ODOO_ORG="odoo"
     - export ODOO_BRANCH="master"
     - export ODOO_URL="https://github.com/${ODOO_ORG}/odoo/archive/${ODOO_BRANCH}.tar.gz"
-    - export ODOO_CMD="../${ODOO_ORG}-${ODOO_BRANCH}/odoo.py"
+    - export ODOO_DIR="../${ODOO_ORG}-${ODOO_BRANCH}"
 
 install:
     - wget -O odoo.tar.gz ${ODOO_URL}
@@ -25,8 +25,8 @@ before_script:
 script:
     - flake8 . --max-line-length=120 --exclude=__unported__ --filename=__init__.py --ignore=F401
     - flake8 . --max-line-length=120 --exclude=__unported__,__init__.py
-    - ${ODOO_CMD} -d test --stop-after-init --init=$(python -c 'import os; print(",".join(x for x in os.listdir(".") if os.path.isdir(x) and not x.startswith(".") and x != "__unported__"))') --addons-path=$(pwd),`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/addons
-    - coverage run ${ODOO_CMD} -d test --test-enable --log-level=test --stop-after-init --init=$(python -c 'import os; print(",".join(x for x in os.listdir(".") if os.path.isdir(x) and not x.startswith(".") and x != "__unported__"))') --addons-path=$(pwd),`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/addons
+    - ${ODOO_DIR}/openerp-server -d test --addons-path=$(pwd),${ODOO_DIR}/addons --stop-after-init --init=$(python -c 'import os; print(",".join(x for x in os.listdir(".") if os.path.isdir(x) and not x.startswith(".") and x != "__unported__"))')
+    - coverage run ${ODOO_DIR}/openerp-server -d test --addons-path=$(pwd),${ODOO_DIR}/addons --test-enable --log-level=test --stop-after-init --init=$(python -c 'import os; print(",".join(x for x in os.listdir(".") if os.path.isdir(x) and not x.startswith(".") and x != "__unported__"))')
 
 after_success:
     coveralls
