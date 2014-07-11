@@ -3,42 +3,25 @@
 language: python
 
 python:
-#    - "pypy" # not supported by odoo 8
-#    - "3.4"  # not supported by odoo 8
-#    - "3.3"  # not supported by odoo 8
     - "2.7"
-#    - "2.6"  # not supported by odoo 8
 
-env:
-#    - ODOO="https://github.com/savoirfairelinux/odoo/archive/setuptools-addons.tar.gz"  # Temp until https://github.com/odoo/odoo/issues/185 or https://github.com/odoo/odoo/issues/441 is fixed
-    - ODOO_ORG="odoo"
-    - ODOO_BRANCH="master"
-    - ODOO_URL="https://github.com/${ODOO_ORG}/odoo/archive/${ODOO_BRANCH}.tar.gz"
-    - ODOO_CMD="../${ODOO_ORG}-${ODOO_BRANCH}/odoo.py"
-#    - ODOO="https://github.com/OCA/OCB/archive/master.zip"
+virtualenv:
+   system_site_packages: true
 
-# Need coveralls for coverage reports
-# Need flake8 for pep8 testing
-# Manually get PyChart
-# Install tested version of odoo (official or ocb)
-# Get modules from other repos which have dependencies (in this case travel requires modules from lp:partner-contact-management and lp:openerp-hr
-install: 
+before_install: 
+    - export ODOO_ORG="odoo"
+    - export ODOO_BRANCH="master"
+    - export ODOO_URL="https://github.com/${ODOO_ORG}/odoo/archive/${ODOO_BRANCH}.tar.gz"
+    - export ODOO_CMD="../${ODOO_ORG}-${ODOO_BRANCH}/odoo.py"
+
+install:
     - wget -O odoo.tar.gz ${ODOO_URL}
     - tar -xf odoo.tar.gz -C ../
     - pip install -r requirements.txt
-#    - pip install http://download.gna.org/pychart/PyChart-1.39.tar.gz
-#    - pip install ${ODOO}
 
-# Create databae
-# Pre-install modules and dependencies
-before_script: 
+before_script:
     - createdb test
 
-# Test with flake, ignore F401 for __init__.py files, use a max length of 120
-# Run tests with coverage
-# Only test modules in repo (list populated by directories in repo)
-# Preload modules before testing to only run tests of repo's modules
-# Include current directory and dependent repos in addons-path as well as official addons
 script:
     - flake8 . --max-line-length=120 --exclude=__unported__ --filename=__init__.py --ignore=F401
     - flake8 . --max-line-length=120 --exclude=__unported__,__init__.py
@@ -46,4 +29,4 @@ script:
     - coverage run ${ODOO_CMD} -d test --test-enable --log-level=test --stop-after-init --init=$(python -c 'import os; print(",".join(x for x in os.listdir(".") if os.path.isdir(x) and not x.startswith(".") and x != "__unported__"))') --addons-path=$(pwd),`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/addons
 
 after_success:
-  coveralls
+    coveralls
