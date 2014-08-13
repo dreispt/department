@@ -1,14 +1,14 @@
 # Config file .coveragerc
 
 [report]
+include =
+    /home/build/*
+
 omit =
-    /usr/*
-    */bin/*
-    */lib/*
-    */odoo/*
-    */openerp/*
     */tests/*
+    */scenario/*
     *__init__.py
+    *__openerp__.py
 
 # Regexes for lines to exclude from consideration
 exclude_lines =
