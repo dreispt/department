@@ -1,0 +1,13 @@
+-
+  Create a new  Issue
+-
+  !record {model: account.analytic.account, id: analytic1, view: False}:
+    name: "One Analytic Account"
+    type: "normal"
+    user_id: base.hr.employee_qdp
+       })
+-
+  There should be Service Level info generated on the Issue
+-
+  !assert {model: account.analytic.account, id: analytic1, string: Analytic Department should be R&D}:
+    - department_id == ref('analytic1')
